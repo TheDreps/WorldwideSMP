@@ -1,0 +1,14 @@
+name: LewisCommands
+version: ${project.version}
+main: me.lewismercer.lewiscommands.LewisCommands
+api-version: 1.16
+authors: [ Lewismercer ]
+description: Basic commands for the SMP server
+commands:
+  map:
+    description: Shows the map!
+  sumo:
+    description: Teleport to the sumo platform, prepare to die!
+  balance:
+    description: Check you're balance!
+    aliases: bal
