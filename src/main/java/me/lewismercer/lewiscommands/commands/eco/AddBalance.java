@@ -71,7 +71,7 @@ public class AddBalance implements CommandExecutor {
         } else if (args.length == 2) { //addbal [player] <amount>
 
             if (sender.hasPermission("lewiscommands.setbalance")) {
-                OfflinePlayer targetOfflinePlayer = Bukkit.getOfflinePlayer(api.getOfflineUUID(args[1]));
+                OfflinePlayer targetOfflinePlayer = Bukkit.getOfflinePlayer(api.getOfflineUUID(args[0]));
 
                 if (!(targetOfflinePlayer.hasPlayedBefore())) {
                     sender.sendMessage(playerNotFound);

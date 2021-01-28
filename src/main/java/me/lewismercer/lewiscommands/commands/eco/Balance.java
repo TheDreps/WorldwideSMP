@@ -9,6 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class Balance implements CommandExecutor {
@@ -35,9 +36,9 @@ public class Balance implements CommandExecutor {
                     return true;
                 }
 
-                Player player = (Player) sender;
+                Player p = (Player) sender;
 
-                player.sendMessage(prefix + "You have $" + api.roundToTwoDecimalPlaces(api.getBal(player.getUniqueId().toString())));
+                p.sendMessage(prefix + "You have $" + api.roundToTwoDecimalPlaces(api.getBal(p.getUniqueId().toString())));
             }else{
                 sender.sendMessage(noPerms);
             }

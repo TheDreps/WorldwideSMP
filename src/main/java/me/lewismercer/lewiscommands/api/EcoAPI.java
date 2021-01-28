@@ -15,6 +15,7 @@ import java.net.URLConnection;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class EcoAPI {
@@ -28,7 +29,6 @@ public class EcoAPI {
     public double getBal(String uuid){
 
         try{
-            Bukkit.getLogger().info("String: " + uuid);
             c = SQL.open();
             ResultSet res = c.createStatement().executeQuery("SELECT * FROM `Eco` WHERE `UUID` = \"" + uuid + "\"");
 
@@ -46,6 +46,28 @@ public class EcoAPI {
 
         Bukkit.getLogger().warning("SQL Error! (Eco)");
         return 0;
+
+    }
+
+    public ArrayList<String> getTopBal(){
+        ArrayList<String> uuids = new ArrayList<>();
+
+        try{
+            c = SQL.open();
+            ResultSet res = c.createStatement().executeQuery("SELECT UUID, BALANCE FROM `Eco` ORDER BY BALANCE DESC LIMIT 5");
+
+            for(int i = 0; i < 5; i++){
+                res.next();
+                uuids.add(i, res.getString("UUID"));
+            }
+
+            c = MySQL.closeConnection(c);
+
+        }catch(SQLException sqlException){
+            // Means theres most likely less than 5
+            sqlException.printStackTrace();
+        }
+        return uuids;
 
     }
 

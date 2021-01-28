@@ -32,6 +32,7 @@ public final class LewisCommands extends JavaPlugin {
     private void registerCommands(){
         //eco
         getCommand("balance").setExecutor(new Balance());
+        getCommand("balancetop").setExecutor(new BalanceTop());
         getCommand("addbalance").setExecutor(new AddBalance());
         getCommand("takebalance").setExecutor(new TakeBalance());
         getCommand("setbalance").setExecutor(new SetBalance());
