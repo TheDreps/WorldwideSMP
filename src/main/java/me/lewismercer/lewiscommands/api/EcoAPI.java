@@ -19,6 +19,8 @@ import java.util.UUID;
 
 public class EcoAPI {
 
+    public Double startingMoney = 500.00;
+
 
     public static Connection c;
     MySQL SQL = new MySQL(DatabaseLogin.host, DatabaseLogin.port, DatabaseLogin.db, DatabaseLogin.user, DatabaseLogin.pw);
@@ -31,9 +33,9 @@ public class EcoAPI {
             ResultSet res = c.createStatement().executeQuery("SELECT * FROM `Eco` WHERE `UUID` = \"" + uuid + "\"");
 
             if (!res.next()) {
-                setBal(uuid, 0);
+                setBal(uuid, startingMoney);
                 c = MySQL.closeConnection(c);
-                return 0;
+                return startingMoney;
             } else{
                 c = MySQL.closeConnection(c);
                 return res.getDouble("BALANCE");
@@ -99,6 +101,7 @@ public class EcoAPI {
             ResultSet res = c.createStatement()
                     .executeQuery("SELECT * FROM `Eco` WHERE `UUID`= '" + uuid + "'");
             if (!res.next()) {
+                setBal(uuid, startingMoney);
                 c.createStatement()
                         .executeUpdate("INSERT INTO `Eco` (`UUID`,`BALANCE`) VALUES ('" + uuid + "','" + amount + "')");
             } else {
@@ -140,6 +143,7 @@ public class EcoAPI {
             ResultSet res = c.createStatement()
                     .executeQuery("SELECT * FROM `Eco` WHERE `UUID`= '" + uuid + "'");
             if (!res.next()) {
+                setBal(uuid, startingMoney);
                 c.createStatement()
                         .executeUpdate("INSERT INTO `Eco` (`UUID`,`BALANCE`) VALUES ('" + uuid + "','" + amount + "')");
             } else {
