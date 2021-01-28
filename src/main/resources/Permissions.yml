@@ -1,0 +1,6 @@
+Permissions:
+  lewiscommnads.:
+    - balance
+    - setbalance (addbal, takebal, setbal)
+    - pay
+    - sell

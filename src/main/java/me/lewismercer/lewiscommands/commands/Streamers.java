@@ -23,20 +23,8 @@ public class Streamers implements CommandExecutor {
         TextComponent hunter = new TextComponent(" - Hunter");
         hunter.setClickEvent( new ClickEvent( ClickEvent.Action.OPEN_URL, "https://www.twitch.tv/skeletonlimes" ) );
 
-//        TextComponent toni = new TextComponent(" - Toni");
-//        toni.setClickEvent( new ClickEvent( ClickEvent.Action.OPEN_URL, "https://www.twitch.tv/phonytoni" ) );
-//
-//        TextComponent kitseus = new TextComponent(" - Kitseus");
-//        kitseus.setClickEvent( new ClickEvent( ClickEvent.Action.OPEN_URL, "https://www.twitch.tv/kitseus" ) );
-//
-//        TextComponent will = new TextComponent(" - Will");
-//        will.setClickEvent( new ClickEvent( ClickEvent.Action.OPEN_URL, "https://www.twitch.tv/imindebt69" ) );
-//
-//        TextComponent kersey = new TextComponent(" - Kersey");
-//        kersey.setClickEvent( new ClickEvent( ClickEvent.Action.OPEN_URL, "https://www.twitch.tv/kersey_" ) );
-//
-//        TextComponent bel = new TextComponent(" - Bel");
-//        bel.setClickEvent( new ClickEvent( ClickEvent.Action.OPEN_URL, "https://www.twitch.tv/bel_icia" ) );
+        TextComponent end = new TextComponent("\nIf you play this SMP and do live streaming let Lewis know to be added to this list!");
+
 
         if(!(sender instanceof Player)){
             sender.sendMessage("nope");
@@ -46,11 +34,7 @@ public class Streamers implements CommandExecutor {
             p.spigot().sendMessage(start);
             p.spigot().sendMessage(lewis);
             p.spigot().sendMessage(hunter);
-            //p.spigot().sendMessage(toni);
-            //p.spigot().sendMessage(kitseus);
-            //p.spigot().sendMessage(will);
-            //p.spigot().sendMessage(kersey);
-            //p.spigot().sendMessage(bel);
+            p.spigot().sendMessage(end);
             p.sendMessage("\n");
         }
 

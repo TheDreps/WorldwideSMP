@@ -9,71 +9,77 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Objects;
-
-public class AddBalance implements CommandExecutor {
+public class TakeBalance implements CommandExecutor {
 
     EcoAPI api = new EcoAPI();
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
+
         String prefix = ChatColor.DARK_PURPLE + "Eco" + ChatColor.DARK_GRAY + " | " + ChatColor.RESET;
         String noPerms = prefix + "Sorry you do not have the required permissions.";
         String playerNotFound = prefix + "That player has never joined the server before.";
-        String usage = prefix + "Usage: /addbal <amount> [player]";
+        String usage = prefix + "Usage: /takebal <amount> [player]";
 
-        if (args.length == 0) { //addbal
+        if (args.length == 0){ //addbal
 
-            if (sender.hasPermission("lewiscommands.setbalance")) {
+            if(sender.hasPermission("lewiscommands.setbalance")){
                 sender.sendMessage(usage);
-                return true;
-            } else {
+            }else{
                 sender.sendMessage(noPerms);
-                return true;
             }
+            return true;
 
 
-        } else if (args.length == 1) { //addbal <amount>
-
+        }else if(args.length == 1){  //takebal <amount>
 
             if (!(sender instanceof Player)) {
                 sender.sendMessage(prefix + "This command is for players only without a target player!");
                 return true;
             }
 
-            Player p = (Player) sender;
+            Player player = (Player) sender;
 
-            if (p.hasPermission("lewiscommands.setbalance")) {
+            if(player.hasPermission("lewiscommands.setbalance")){
+
+
 
                 float amount;
 
-                try {
+                try{
                     amount = Float.parseFloat(args[0]);
-                    if (amount < 0) {
-                        p.sendMessage(prefix + "Please use a positive amount.");
+                    if(amount < 0){
+                        player.sendMessage(prefix + "Please use a positive amount.");
                         return true;
                     }
-                } catch (NumberFormatException e) {
-                    p.sendMessage(prefix + "Invalid number!");
+
+                }catch (NumberFormatException e){
+                    player.sendMessage(prefix + "Invalid number!");
                     return true;
                 }
 
-                api.addBal(p.getUniqueId().toString(), amount);
+                if (!api.checkBal(player.getUniqueId().toString(), amount)) {
 
-                p.sendMessage(prefix + "Added $" + api.roundToTwoDecimalPlaces(amount) + " to your balance!");
-            } else {
-                p.sendMessage(noPerms);
+                    player.sendMessage(prefix + player.getDisplayName() + " cannot afford this!  " + player.getDisplayName() + " has $" + api.roundToTwoDecimalPlaces(api.getBal(player.getUniqueId().toString())) + ".");
+
+                }
+
+                api.takeBal(player.getUniqueId().toString(), amount);
+
+                player.sendMessage(prefix + "Took $" + api.roundToTwoDecimalPlaces(amount) +  " from your balance!");
+            }else{
+                player.sendMessage(noPerms);
             }
             return true;
 
 
-        } else if (args.length == 2) { //addbal [player] <amount>
+        }else if(args.length == 2){ //takebal [player] <amount>
 
-            if (sender.hasPermission("lewiscommands.setbalance")) {
+            if(sender.hasPermission("lewiscommands.setbalance")){
                 OfflinePlayer targetOfflinePlayer = Bukkit.getOfflinePlayer(api.getOfflineUUID(args[1]));
 
-                if (!(targetOfflinePlayer.hasPlayedBefore())) {
+                if(!(targetOfflinePlayer.hasPlayedBefore())){
                     sender.sendMessage(playerNotFound);
                     return true;
                 }
@@ -82,35 +88,37 @@ public class AddBalance implements CommandExecutor {
 
                 float amount;
 
-                try {
+                try{
                     amount = Float.parseFloat(args[1]);
-                    if (amount < 0) {
+                    if(amount < 0){
                         sender.sendMessage(prefix + "Please use a positive amount.");
                         return true;
                     }
-                } catch (NumberFormatException e) {
-                    sender.sendMessage(prefix + "Invalid amount!");
+                }catch (NumberFormatException e){
+                    sender.sendMessage(prefix + "Invalid number!");
                     return true;
                 }
 
-                api.addBal(uuid, amount);
+                api.takeBal(uuid, amount);
 
-                sender.sendMessage(prefix + "Added $" + api.roundToTwoDecimalPlaces(amount) + " to " + api.getOfflineName(args[0]) + "'s balance!");
+                sender.sendMessage(prefix + "Took $" + api.roundToTwoDecimalPlaces(amount) + " from " + api.getOfflineName(args[0]) + "'s balance!");
 
                 return true;
-            } else {
+            }else{
                 sender.sendMessage(noPerms);
                 return true;
             }
 
-        } else {
+        }else{
 
-            if (sender.hasPermission("lewiscommands.setbalance")) {
+            if(sender.hasPermission("lewiscommands.setbalance")){
                 sender.sendMessage(usage);
-            } else {
+            }else{
                 sender.sendMessage(noPerms);
             }
+
             return true;
+
         }
     }
 }

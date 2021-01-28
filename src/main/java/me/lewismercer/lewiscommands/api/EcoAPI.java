@@ -3,11 +3,9 @@ package me.lewismercer.lewiscommands.api;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import me.lewismercer.lewiscommands.LewisCommands;
 import me.lewismercer.lewiscommands.sql.DatabaseLogin;
 import me.lewismercer.lewiscommands.sql.MySQL;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -190,13 +188,49 @@ public class EcoAPI {
         return UUID.fromString(addDashes("d66243e52e704048a70fee1eff78e283"));
     }
 
+    public String getOfflineName(String username){
+
+        String urlPrefix = "https://api.mojang.com/users/profiles/minecraft/";
+
+        try {
+            URL url = new URL(urlPrefix + username);
+
+            URLConnection request = url.openConnection();
+            request.connect();
+
+
+            JsonParser jp = new JsonParser();
+            JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent()));
+            JsonObject rootObj = root.getAsJsonObject();
+
+            return rootObj.get("name").getAsString();
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        return "Error404";
+    }
+
     public String addDashes(String noDashesUUID){
-        StringBuffer sb = new StringBuffer(noDashesUUID);
+        StringBuilder sb = new StringBuilder(noDashesUUID);
         sb.insert(20, '-');
         sb.insert(16, '-');
         sb.insert(12, '-');
         sb.insert(8, '-');
         return sb.toString();
+    }
+
+    public String roundToTwoDecimalPlaces(float val)
+    {
+        return String.format("%.2f", val);
+    }
+
+    public String roundToTwoDecimalPlaces(double val)
+    {
+        return String.format("%.2f", val);
     }
 
 

@@ -37,7 +37,7 @@ public class Balance implements CommandExecutor {
 
                 Player player = (Player) sender;
 
-                player.sendMessage(prefix + "You have $" + api.getBal(player.getUniqueId().toString()));
+                player.sendMessage(prefix + "You have $" + api.roundToTwoDecimalPlaces(api.getBal(player.getUniqueId().toString())));
             }else{
                 sender.sendMessage(noPerms);
             }
@@ -60,7 +60,7 @@ public class Balance implements CommandExecutor {
                     return true;
                 }
 
-                sender.sendMessage(prefix + player.getName() + "'s balance: $" + api.getBal(offlineUUID.toString()));
+                sender.sendMessage(prefix + player.getName() + "'s balance: $" + api.roundToTwoDecimalPlaces(api.getBal(offlineUUID.toString())));
             }else{
                 sender.sendMessage(noPerms);
             }

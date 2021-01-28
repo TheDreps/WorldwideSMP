@@ -3,7 +3,7 @@ package me.lewismercer.lewiscommands;
 import me.lewismercer.lewiscommands.commands.Map;
 import me.lewismercer.lewiscommands.commands.Streamers;
 import me.lewismercer.lewiscommands.commands.Sumo;
-import me.lewismercer.lewiscommands.commands.eco.Balance;
+import me.lewismercer.lewiscommands.commands.eco.*;
 import me.lewismercer.lewiscommands.events.PlayerDeath;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -30,9 +30,18 @@ public final class LewisCommands extends JavaPlugin {
     }
 
     private void registerCommands(){
-        //getCommand("streamers").setExecutor(new Streamers());
-        getCommand("sumo").setExecutor(new Sumo());
+        //eco
         getCommand("balance").setExecutor(new Balance());
+        getCommand("addbalance").setExecutor(new AddBalance());
+        getCommand("takebalance").setExecutor(new TakeBalance());
+        getCommand("setbalance").setExecutor(new SetBalance());
+        getCommand("pay").setExecutor(new Pay());
+        getCommand("sell").setExecutor(new Sell());
+
+
+
+        getCommand("streamers").setExecutor(new Streamers());
+        getCommand("sumo").setExecutor(new Sumo());
         getCommand("map").setExecutor(new Map());
         //getCommand("tpa").setExecutor(new Tpa());
     }

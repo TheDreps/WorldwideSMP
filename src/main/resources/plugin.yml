@@ -5,6 +5,8 @@ api-version: 1.16
 authors: [ Lewismercer ]
 description: Basic commands for the SMP server
 commands:
+  streamers:
+    description: Shows the streamers on the SMP!
   map:
     description: Shows the map!
   sumo:
@@ -12,3 +14,16 @@ commands:
   balance:
     description: Check you're balance!
     aliases: bal
+  addbalance:
+    description: Add to a players balance!
+    aliases: addbal
+  takebalance:
+    description: Takes balance away from a player!
+    aliases: takebal
+  setbalance:
+    description: Set a players balance!
+    aliases: setbal
+  pay:
+    description: Pay another player!
+  sell:
+    description: Use this to sell a netherite ingot!
