@@ -2,7 +2,6 @@ name: WorldwideSMP
 version: ${project.version}
 main: com.worldwidesmp.worldwidesmp.WorldwideSMP
 api-version: 1.16
-prefix: [ WW SMP ]
 load: STARTUP
 authors: [ TheDreps, TheRdMelon ]
 description: Plugin to run on Worldwide SMP
