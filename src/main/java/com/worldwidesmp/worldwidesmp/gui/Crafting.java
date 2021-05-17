@@ -1,24 +1,28 @@
 package com.worldwidesmp.worldwidesmp.gui;
 
-import net.kyori.adventure.text.Component;
+import com.worldwidesmp.worldwidesmp.WorldwideSMP;
+import com.worldwidesmp.worldwidesmp.utils.CraftingUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 public class Crafting implements Listener {
     private final Inventory inv;
     private final ItemStack ph = Items.placeholder;
+    private final ItemStack air = Items.air;
 
     public Crafting(){
-        inv = Bukkit.createInventory(null, 45, Component.text("Crafting Table"));
+        inv = Bukkit.createInventory(null, 45, "Crafting Table");
 
         initializeItems();
     }
@@ -65,6 +69,39 @@ public class Crafting implements Listener {
         cc.put(8, 29);
         cc.put(9, 30);
         cc.put(10, 23);
+
+        ItemStack result = CraftingUtils.getCraftingResult(e.getInventory(), e.getWhoClicked());
+        if (result.getType() != Material.AIR){
+
+            if(e.getSlot() == 23 && e.getView().getTopInventory().equals(e.getClickedInventory())){
+                //
+            }
+
+
+            new BukkitRunnable(){
+                @Override
+                public void run() {
+                    setResult(result, e.getView());
+                }
+            }.runTaskLaterAsynchronously(WorldwideSMP.plugin, 2);
+
+            Bukkit.getLogger().info(result.getType().toString() + ", " + result.getAmount());
+        }else{
+
+            new BukkitRunnable(){
+                @Override
+                public void run() {
+                    setResult(air, e.getView());
+                }
+            }.runTaskLaterAsynchronously(WorldwideSMP.plugin, 2);
+
+        }
+
+    }
+
+    private void setResult(ItemStack result, InventoryView iv){
+
+        iv.getTopInventory().setItem(23, result);
 
     }
 

@@ -1,6 +1,5 @@
 package com.worldwidesmp.worldwidesmp.gui;
 
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -10,18 +9,18 @@ import java.util.Arrays;
 public class Items {
 
     static ItemStack placeholder = createGuiItem(Material.GRAY_STAINED_GLASS_PANE, " ");
+    static ItemStack air = new ItemStack(Material.AIR);
 
 
 
 
-
-    static ItemStack createGuiItem(final Material material, final String name, final Component... lore) {
+    static ItemStack createGuiItem(final Material material, final String name, final String... lore) {
         final ItemStack item = new ItemStack(material, 1);
         final ItemMeta meta = item.getItemMeta();
 
-        meta.displayName(Component.text(name));
+        meta.setDisplayName(name);
 
-        meta.lore(Arrays.asList(lore));
+        meta.setLore(Arrays.asList(lore));
 
         item.setItemMeta(meta);
 
@@ -32,7 +31,7 @@ public class Items {
         final ItemStack item = new ItemStack(material, 1);
         final ItemMeta meta = item.getItemMeta();
 
-        meta.displayName(Component.text(name));
+        meta.setDisplayName(name);
 
         item.setItemMeta(meta);
 

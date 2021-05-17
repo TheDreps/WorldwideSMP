@@ -1,6 +1,7 @@
 package com.worldwidesmp.worldwidesmp.utils;
 
 import com.worldwidesmp.worldwidesmp.inventory.CraftingContainer;
+
 import net.minecraft.server.v1_16_R3.RecipeCrafting;
 import net.minecraft.server.v1_16_R3.Recipes;
 import net.minecraft.server.v1_16_R3.World;
