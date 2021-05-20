@@ -10,7 +10,7 @@ public class Items {
 
     static ItemStack placeholder = createGuiItem(Material.GRAY_STAINED_GLASS_PANE, " ");
     static ItemStack air = new ItemStack(Material.AIR);
-
+    static ItemStack backpack = createGuiItem(Material.LEATHER,"Backpack");
 
 
 
