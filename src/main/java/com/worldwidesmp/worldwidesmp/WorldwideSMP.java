@@ -38,6 +38,6 @@ public final class WorldwideSMP extends JavaPlugin {
     private void registerEvents(){
         pm.registerEvents(new GuiEvents(), this);
         pm.registerEvents(new Crafting(), this);
-        pm.registerEvents(new Backpack(45), this);
+        pm.registerEvents(new Backpack(), this);
     }
 }
