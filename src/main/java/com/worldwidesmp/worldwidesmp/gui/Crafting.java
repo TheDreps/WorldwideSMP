@@ -3,6 +3,8 @@ package com.worldwidesmp.worldwidesmp.gui;
 import com.worldwidesmp.worldwidesmp.WorldwideSMP;
 import com.worldwidesmp.worldwidesmp.utils.CraftingUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,13 +13,16 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.nio.channels.FileChannel;
 
 import static com.worldwidesmp.worldwidesmp.WorldwideSMP.logger;
 
 public class Crafting implements Listener {
     private final Inventory inv;
-    private final ItemStack ph = Items.placeholder;
+    private final ItemStack ph = new ItemStack(Material.GRAY_STAINED_GLASS_PANE,1);
 
     public Crafting(){
         inv = Bukkit.createInventory(null, 45, "Crafting Table");
@@ -26,6 +31,9 @@ public class Crafting implements Listener {
     }
 
     public void initializeItems(){
+        ItemMeta meta = ph.getItemMeta();
+        meta.setDisplayName(" ");
+        ph.setItemMeta(meta);
         for(int i = 0; i<10; i++){
             inv.setItem(i, ph);
         }
@@ -54,14 +62,13 @@ public class Crafting implements Listener {
     }
 
     @EventHandler
-    public void invDragEvent(InventoryDragEvent e){
-        logger.info("something happened");
+    public void invDragEvent(InventoryDragEvent e) {
         if (e.getView().getTitle().equals("Crafting Table")) {
             new BukkitRunnable() {
                 @Override
                 public void run() {
                     ItemStack result = CraftingUtils.getCraftingResult(e.getInventory(), e.getWhoClicked());
-                    setResult(result, e.getView());
+                        setResult(result, e.getView());
                 }
             }.runTaskLaterAsynchronously(WorldwideSMP.plugin, 2);
         }
@@ -69,31 +76,34 @@ public class Crafting implements Listener {
 
     @EventHandler
     public void invClickEvent(InventoryClickEvent e) {
-        logger.info("something happened");
         if (e.getView().getTitle().equals("Crafting Table")) {
             if (e.getSlot() == 23 && e.getView().getTopInventory().equals(e.getClickedInventory())&&e.getView().getTopInventory().getItem(23) != null) {
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                            if (e.isShiftClick()) {
-                                logger.info("shiftClicked!");
-                                ItemStack result = CraftingUtils.getCraftingResult(e.getInventory(), e.getWhoClicked());
-                                setResult(result, e.getView());
-                                removeCraftingSlots(e.getView().getTopInventory());
-                                while (CraftingUtils.getCraftingResult(e.getInventory(), e.getWhoClicked()).equals(result)) {
-                                    e.getView().getBottomInventory().addItem(result);
-                                    removeCraftingSlots(e.getView().getTopInventory());
-                                }
-                            } else {
-                                logger.info("clicked on 23");
+                        if (e.isShiftClick()) {
+                            ItemStack result = CraftingUtils.getCraftingResult(e.getInventory(), e.getWhoClicked());
+                            setResult(result, e.getView());
+                            removeCraftingSlots(e.getView().getTopInventory());
+                            while (CraftingUtils.getCraftingResult(e.getInventory(), e.getWhoClicked()).equals(result)) {
+                                e.getView().getBottomInventory().addItem(result);
                                 removeCraftingSlots(e.getView().getTopInventory());
                             }
-
-                            ItemStack result = CraftingUtils.getCraftingResult(e.getInventory(), e.getWhoClicked());
+                        } else {
+                            removeCraftingSlots(e.getView().getTopInventory());
+                        }
+                        ItemStack result = CraftingUtils.getCraftingResult(e.getInventory(), e.getWhoClicked());
                             setResult(result, e.getView());
                     }
                 }.runTaskLaterAsynchronously(WorldwideSMP.plugin, 2);
             }
+            new BukkitRunnable() {
+                @Override
+                public void run(){
+                    ItemStack result = CraftingUtils.getCraftingResult(e.getInventory(), e.getWhoClicked());
+                    setResult(result, e.getView());
+                }
+            }.runTaskLaterAsynchronously(WorldwideSMP.plugin,2);
         }
     }
 
