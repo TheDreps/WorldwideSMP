@@ -71,6 +71,9 @@ public class Backpack implements Listener {
         WorldwideSMP.plugin.saveConfig();
     }
 
+    public String convertToNormal(String string){
+        return string.replaceAll(String.valueOf(ChatColor.COLOR_CHAR),"");
+    }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void playerClickEvent(PlayerInteractEvent e) {
@@ -79,35 +82,32 @@ public class Backpack implements Listener {
             if (e.getItem().getItemMeta().getDisplayName().equals("Backpack")) {
                 Inventory inv = Bukkit.createInventory(null, 45, "Backpack");
                 String lore = e.getItem().getItemMeta().getLore().get(0);
-                ItemStack x = WorldwideSMP.plugin.config.getItemStack(e.getItem().getItemMeta().getLore().get(0));
-                plugin.config.addDefault("temp3",e.getItem().getItemMeta().getLore().get(0));
+                ItemStack x = WorldwideSMP.plugin.config.getItemStack(convertToNormal(e.getItem().getItemMeta().getLore().get(0)));
+                logger.info(convertToNormal(e.getItem().getItemMeta().getLore().get(0)));
                 if(lore.equals(" "))
                 {
                     ItemMeta meta = e.getItem().getItemMeta();
                     ArrayList<String> metaLore = new ArrayList<>();
                     metaLore.add(Items.convertToInvisibleString(String.valueOf(WorldwideSMP.plugin.config.getInt("Last"))));
-                    plugin.config.addDefault("temp",Items.convertToInvisibleString("15"));
                     plugin.config.set("Last",plugin.config.getInt("Last")+1);
                     meta.setLore(metaLore);
                     e.getItem().setItemMeta(meta);
                 }
                 if (x != null) {
                     logger.info("x isnt null");
-                    int condition = WorldwideSMP.plugin.config.getInt(Items.convertToInvisibleString(String.valueOf(WorldwideSMP.plugin.config.getInt("Last"))) + " Amount");
+                    int condition = WorldwideSMP.plugin.config.getInt(convertToNormal(e.getItem().getItemMeta().getLore().get(0)) + " Amount");
                     for (int i = 0; i < condition; i++)
                         inv.addItem(x);
                 }
                 openInventory(player, inv);
                 try {
-                    WorldwideSMP.plugin.config.set(e.getPlayer().getUniqueId().toString(), Items.convertToInvisibleString(String.valueOf(WorldwideSMP.plugin.config.getInt("Last"))));
+                    WorldwideSMP.plugin.config.set(e.getPlayer().getUniqueId().toString(), convertToNormal(e.getItem().getItemMeta().getLore().get(0)));
                 } catch(NullPointerException err){
-                    WorldwideSMP.plugin.config.addDefault(e.getPlayer().getUniqueId().toString(), Items.convertToInvisibleString(String.valueOf(WorldwideSMP.plugin.config.getInt("Last"))));
+                    WorldwideSMP.plugin.config.addDefault(e.getPlayer().getUniqueId().toString(), convertToNormal(e.getItem().getItemMeta().getLore().get(0)));
                 }
 
                 WorldwideSMP.plugin.getConfig().options().copyDefaults(true);
                 WorldwideSMP.plugin.saveConfig();
-//                WorldwideSMP.plugin.getConfig().options().copyDefaults(false);
-//                WorldwideSMP.plugin.saveDefaultConfig();
             }
         } catch (NullPointerException ignored) { }
     }
