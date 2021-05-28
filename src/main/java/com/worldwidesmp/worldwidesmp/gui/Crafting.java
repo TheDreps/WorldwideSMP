@@ -77,33 +77,32 @@ public class Crafting implements Listener {
     @EventHandler
     public void invClickEvent(InventoryClickEvent e) {
         if (e.getView().getTitle().equals("Crafting Table")) {
-            if (e.getSlot() == 23 && e.getView().getTopInventory().equals(e.getClickedInventory())&&e.getView().getTopInventory().getItem(23) != null) {
+            if (e.getSlot() == 23 && e.getView().getTopInventory().equals(e.getClickedInventory())) {
+                e.setCancelled(true);
                 new BukkitRunnable() {
                     @Override
                     public void run() {
                         if (e.isShiftClick()) {
                             ItemStack result = CraftingUtils.getCraftingResult(e.getInventory(), e.getWhoClicked());
                             setResult(result, e.getView());
-                            removeCraftingSlots(e.getView().getTopInventory());
+                            e.getView().getBottomInventory().addItem(result);
                             while (CraftingUtils.getCraftingResult(e.getInventory(), e.getWhoClicked()).equals(result)) {
                                 e.getView().getBottomInventory().addItem(result);
                                 removeCraftingSlots(e.getView().getTopInventory());
                             }
-                        } else {
-                            removeCraftingSlots(e.getView().getTopInventory());
                         }
-                        ItemStack result = CraftingUtils.getCraftingResult(e.getInventory(), e.getWhoClicked());
-                            setResult(result, e.getView());
                     }
                 }.runTaskLaterAsynchronously(WorldwideSMP.plugin, 2);
             }
+            //clicking on 23rd slot removes it
             new BukkitRunnable() {
                 @Override
-                public void run(){
+                public void run() {
                     ItemStack result = CraftingUtils.getCraftingResult(e.getInventory(), e.getWhoClicked());
                     setResult(result, e.getView());
                 }
-            }.runTaskLaterAsynchronously(WorldwideSMP.plugin,2);
+            }.runTaskLaterAsynchronously(WorldwideSMP.plugin, 2);
+            e.setCancelled(false);
         }
     }
 
