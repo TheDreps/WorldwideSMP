@@ -2,7 +2,6 @@ package me.lewismercer.lewiscommands;
 
 import me.lewismercer.lewiscommands.commands.Map;
 import me.lewismercer.lewiscommands.commands.Streamers;
-import me.lewismercer.lewiscommands.commands.Sumo;
 import me.lewismercer.lewiscommands.commands.eco.*;
 import me.lewismercer.lewiscommands.events.PlayerDeath;
 import org.bukkit.plugin.PluginManager;
@@ -42,7 +41,6 @@ public final class LewisCommands extends JavaPlugin {
 
 
         getCommand("streamers").setExecutor(new Streamers());
-        getCommand("sumo").setExecutor(new Sumo());
         getCommand("map").setExecutor(new Map());
         //getCommand("tpa").setExecutor(new Tpa());
     }

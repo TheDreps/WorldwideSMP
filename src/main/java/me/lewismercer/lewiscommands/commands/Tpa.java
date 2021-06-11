@@ -12,11 +12,13 @@ public class Tpa implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
+        Double cost = 1500.00;
+
         //  /tpa <player>
 
 
         if(!(sender instanceof Player)){
-            sender.sendMessage("nope");
+            sender.sendMessage("This is only for diamonds!");
             return false;
         }
 
