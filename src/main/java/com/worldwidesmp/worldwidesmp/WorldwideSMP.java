@@ -35,6 +35,8 @@ public final class WorldwideSMP extends JavaPlugin {
         recipe.setIngredient('L', Material.LEATHER);
 
         Bukkit.addRecipe(recipe);
+
+
     }
 
     @Override
@@ -50,5 +52,8 @@ public final class WorldwideSMP extends JavaPlugin {
         pm.registerEvents(new GuiEvents(), this);
         pm.registerEvents(new Crafting(), this);
         pm.registerEvents(new Backpack(), this);
+        pm.registerEvents(new Recipes(), this);
+        pm.registerEvents(new Telekenises(),this);
+        pm.registerEvents(new EnchantingTable(),this);
     }
 }
