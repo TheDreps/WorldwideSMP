@@ -2,13 +2,18 @@ package com.worldwidesmp.worldwidesmp.gui;
 
 import com.worldwidesmp.worldwidesmp.WorldwideSMP;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import static com.worldwidesmp.worldwidesmp.WorldwideSMP.logger;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Telekenises implements Listener {
@@ -26,7 +31,8 @@ public class Telekenises implements Listener {
                 if(!e.getPlayer().getInventory().addItem(e.getBlock().getDrops(e.getPlayer().getItemInHand()).iterator().next()).isEmpty())
                 {
                     World world = e.getPlayer().getWorld();
-                    world.dropItem(e.getBlock().getLocation().toCenterLocation(), e.getBlock().getDrops(e.getPlayer().getItemInHand()).iterator().next());
+                    Location location = e.getBlock().getLocation();
+                    world.dropItemNaturally(location, e.getBlock().getDrops(e.getPlayer().getItemInHand()).iterator().next());
                 }
             }
         } catch(Exception ignored){}

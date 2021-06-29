@@ -10,6 +10,7 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -20,6 +21,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.worldwidesmp.worldwidesmp.WorldwideSMP.logger;
 import static com.worldwidesmp.worldwidesmp.WorldwideSMP.plugin;
@@ -76,88 +79,108 @@ public class Crafting implements Listener {
     @EventHandler
     public void invCloseEvent(InventoryCloseEvent e){
         if (e.getView().getTitle().equals("Crafting Table")) {
-            ItemStack drop = e.getInventory().getItem(10);
-            if(drop!=null)
-                givePlayer(e.getPlayer(), drop);
+            ArrayList<ItemStack> drops = new ArrayList<>();
+            drops.add(e.getInventory().getItem(10));
+            drops.add(e.getInventory().getItem(11));
+            drops.add(e.getInventory().getItem(12));
+            drops.add(e.getInventory().getItem(19));
+            drops.add(e.getInventory().getItem(20));
+            drops.add(e.getInventory().getItem(21));
+            drops.add(e.getInventory().getItem(28));
+            drops.add(e.getInventory().getItem(29));
+            drops.add(e.getInventory().getItem(30));
+            for(ItemStack i : drops)
+                if(i!=null)
+                    givePlayer(e.getPlayer(), i);
         }
     }
 
     @EventHandler
     public void invDragEvent(InventoryDragEvent e) {
         if (e.getView().getTitle().equals("Crafting Table")) {
-            if (e.getView().getTitle().equals("Crafting Table")) {
-                if (e.getView().getTopInventory().equals(e.getInventory()) && e.getInventorySlots().iterator().next() == 23) {
-                    int temp = e.getCursor().getAmount();
-                    int temp2 = e.getView().getTopInventory().getItem(23).getAmount();
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            e.setCursor(e.getView().getTopInventory().getItem(23).add(e.getCursor().getAmount()));
-                            if(temp+temp2<=64) {
-                                removeCraftingSlots(e.getView().getTopInventory());
-                            }
-                            ItemStack result = CraftingUtils.getCraftingResult(e.getInventory(), e.getWhoClicked());
-                            setResult(result, e.getView());
-                        }
-                    }.runTaskLaterAsynchronously(plugin, 2);
+            if(e.getView().getTopInventory().getItem(23)==null&&e.getRawSlots().contains(23))
+                e.setCancelled(true);
+            if (e.getView().getTopInventory().equals(e.getInventory()) && e.getInventorySlots().iterator().next() == 23) {
+                if (e.getOldCursor().getAmount() != 0) {
+                    e.setCancelled(true);
                 } else {
                     new BukkitRunnable() {
                         @Override
                         public void run() {
+                            removeCraftingSlots(e.getView().getTopInventory());
                             ItemStack result = CraftingUtils.getCraftingResult(e.getInventory(), e.getWhoClicked());
                             setResult(result, e.getView());
                         }
-                    }.runTaskLaterAsynchronously(WorldwideSMP.plugin, 2);
+                    }.runTaskLaterAsynchronously(plugin, 2);
                 }
+            } else {
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        ItemStack result = CraftingUtils.getCraftingResult(e.getInventory(), e.getWhoClicked());
+                        setResult(result, e.getView());
+                    }
+                }.runTaskLaterAsynchronously(WorldwideSMP.plugin, 2);
             }
         }
     }
+
 
     @EventHandler
     public void invClickEvent(InventoryClickEvent e) {
         if (e.getView().getTitle().equals("Crafting Table")) {
             if (e.getView().getTopInventory().equals(e.getClickedInventory()) && e.getSlot() == 23){
-                ItemStack result = CraftingUtils.getCraftingResult(e.getInventory(), e.getWhoClicked());
-                setResult(result, e.getView());
-                if(e.isShiftClick()) {
+                if(e.getAction().equals(InventoryAction.DROP_ONE_SLOT))
+                {
                     e.setCancelled(true);
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
+                }
+                else {
+                    ItemStack result = CraftingUtils.getCraftingResult(e.getInventory(), e.getWhoClicked());
+                    setResult(result, e.getView());
+                    if (e.isShiftClick()) {
+                        e.setCancelled(true);
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
                                 while (CraftingUtils.getCraftingResult(e.getInventory(), e.getWhoClicked()).equals(result)) {
-                                    e.getView().getBottomInventory().addItem(result);
+                                    if (!(e.getView().getBottomInventory().addItem(result).isEmpty())) {
+
+                                        ItemStack result = CraftingUtils.getCraftingResult(e.getInventory(), e.getWhoClicked());
+                                        setResult(result, e.getView());
+                                        break;
+                                    }
                                     removeCraftingSlots(e.getView().getTopInventory());
                                 }
                                 e.setCancelled(false);
-                        }
-                    }.runTaskLaterAsynchronously(plugin, 2);
-                }
-                else {
-                    if(e.getCursor().getAmount()==0) {
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                removeCraftingSlots(e.getView().getTopInventory());
-                                ItemStack result = CraftingUtils.getCraftingResult(e.getInventory(), e.getWhoClicked());
-                                setResult(result, e.getView());
                             }
                         }.runTaskLaterAsynchronously(plugin, 2);
-                    }else {
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                if (e.getCursor().getAmount() == 0) {
-                                    e.setCursor(e.getView().getTopInventory().getItem(23));
+                    } else {
+                        if (e.getCursor().getAmount() == 0) {
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
                                     removeCraftingSlots(e.getView().getTopInventory());
-                                } else {
-                                    ItemStack cursor = e.getCursor();
-                                    e.setCursor(e.getView().getTopInventory().getItem(23));
-                                    e.getView().getTopInventory().setItem(23,cursor);
+                                    ItemStack result = CraftingUtils.getCraftingResult(e.getInventory(), e.getWhoClicked());
+                                    setResult(result, e.getView());
                                 }
-                                ItemStack result = CraftingUtils.getCraftingResult(e.getInventory(), e.getWhoClicked());
-                                setResult(result, e.getView());
-                            }
-                        }.runTaskLaterAsynchronously(plugin, 2);
+                            }.runTaskLaterAsynchronously(plugin, 2);
+                        } else {
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    if (e.getCursor().getAmount() == 0) {
+                                        e.setCursor(e.getView().getTopInventory().getItem(23));
+                                        removeCraftingSlots(e.getView().getTopInventory());
+                                    } else {
+                                        ItemStack cursor = e.getCursor();
+                                        e.setCursor(e.getView().getTopInventory().getItem(23));
+                                        e.getView().getTopInventory().setItem(23, cursor);
+                                    }
+                                    ItemStack result = CraftingUtils.getCraftingResult(e.getInventory(), e.getWhoClicked());
+                                    setResult(result, e.getView());
+                                }
+                            }.runTaskLaterAsynchronously(plugin, 2);
+                        }
                     }
                 }
             }
