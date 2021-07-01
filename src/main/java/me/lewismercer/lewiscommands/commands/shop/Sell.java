@@ -1,4 +1,4 @@
-package me.lewismercer.lewiscommands.commands.eco;
+package me.lewismercer.lewiscommands.commands.shop;
 
 import me.lewismercer.lewiscommands.api.EcoAPI;
 import org.bukkit.ChatColor;
@@ -17,7 +17,7 @@ public class Sell implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        String prefix = ChatColor.DARK_PURPLE + "Eco" + ChatColor.DARK_GRAY + " | " + ChatColor.RESET;
+        String prefix = ChatColor.DARK_PURPLE + "Sell" + ChatColor.DARK_GRAY + " | " + ChatColor.RESET;
         String noPerms = prefix + "Sorry you do not have the required permissions.";
         String usage = prefix + "Usage: Do /sell while holding a netherite ingot in your hand. (For $" + netheriteValue + ")";
 

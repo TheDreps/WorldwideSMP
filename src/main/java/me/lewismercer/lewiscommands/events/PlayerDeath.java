@@ -1,9 +1,7 @@
 package me.lewismercer.lewiscommands.events;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -33,5 +31,9 @@ public class PlayerDeath implements Listener {
                 e.setDeathMessage(ChatColor.DARK_GRAY + "" + ChatColor.ITALIC + e.getDeathMessage() + " (again)");
             }
         }
+
+        e.setDeathMessage("☠ " + e.getDeathMessage());
+
+
     }
 }

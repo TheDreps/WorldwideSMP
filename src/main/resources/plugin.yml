@@ -5,8 +5,6 @@ api-version: 1.17
 authors: [ Lewismercer ]
 description: Basic commands for the SMP server
 commands:
-  streamers:
-    description: Shows the streamers on the SMP!
   map:
     description: Shows the map!
   balance:
@@ -28,3 +26,26 @@ commands:
     description: Pay another player!
   sell:
     description: Use this to sell a netherite ingot!
+  setrank:
+    description: Set a players rank!
+  tell:
+    description: Simple tell msg
+    aliases:
+      - t
+      - msg
+      - w
+  reply:
+    description: Send a reply
+    aliases:
+      - r
+  mute:
+    description: Mute a pleb
+  nickname:
+    description: Set a nick
+    aliases:
+      - nick
+  store:
+    description: Open the store
+    aliases:
+      - buy
+      - shop
