@@ -1,67 +1,21 @@
 package com.worldwidesmp.worldwidesmp.gui;
 
-import com.destroystokyo.paper.ClientOption;
-import com.destroystokyo.paper.Title;
-import com.destroystokyo.paper.block.TargetBlockInfo;
-import com.destroystokyo.paper.entity.TargetEntityInfo;
-import com.destroystokyo.paper.profile.PlayerProfile;
 import com.worldwidesmp.worldwidesmp.WorldwideSMP;
-import com.worldwidesmp.worldwidesmp.utils.CraftingUtils;
-import net.kyori.adventure.text.Component;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.minecraft.server.v1_16_R3.IInventory;
+import com.worldwidesmp.worldwidesmp.enchantments.SmeltingTouch;
+import com.worldwidesmp.worldwidesmp.enchantments.Telekinesis;
 import org.bukkit.*;
-import org.bukkit.advancement.Advancement;
-import org.bukkit.advancement.AdvancementProgress;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.PistonMoveReaction;
-import org.bukkit.block.Sign;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.conversations.Conversation;
-import org.bukkit.conversations.ConversationAbandonedEvent;
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftInventoryEnchanting;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
-import org.bukkit.entity.memory.MemoryKey;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
-import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.*;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerResourcePackStatusEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.map.MapView;
-import org.bukkit.metadata.MetadataValue;
-import org.bukkit.permissions.Permission;
-import org.bukkit.permissions.PermissionAttachment;
-import org.bukkit.permissions.PermissionAttachmentInfo;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.util.BoundingBox;
-import org.bukkit.util.RayTraceResult;
-import org.bukkit.util.Vector;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
-import java.lang.reflect.Array;
-import java.net.InetSocketAddress;
 import java.util.*;
 
-import static com.worldwidesmp.worldwidesmp.WorldwideSMP.logger;
 import static com.worldwidesmp.worldwidesmp.WorldwideSMP.plugin;
 import static java.lang.Math.round;
 
@@ -96,12 +50,34 @@ public class EnchantingTable implements Listener {
     private final ItemStack barrier = createGuiItem(Material.BARRIER,ChatColor.RED+"Close");
     private final ItemStack deny = createGuiItem(Material.ORANGE_STAINED_GLASS,ChatColor.RED+"Cannot enchant item!");
     private final ItemStack empty = createGuiItem(Material.ORANGE_STAINED_GLASS,ChatColor.RED+"Place an item to enchant!");
+    public Telekinesis telekinesis;
+    public SmeltingTouch smeltingTouch;
     Random random = new Random();
     Inventory inv;
 
     public EnchantingTable() {
         inv = Bukkit.createInventory(null, 54, "Enchanting Table");
         initializeItems();
+    }
+
+    public String convertToRoman(int num){
+        switch(num){
+            case 1:
+                return "I";
+            case 2:
+                return "II";
+            case 3:
+                return "III";
+            case 4:
+                return "IV";
+            case 5:
+                return "V";
+            case 6:
+                return "VI";
+            case 7:
+                return "VII";
+        }
+        return String.valueOf(num);
     }
 
     public void initializeItems() {
@@ -174,7 +150,23 @@ public class EnchantingTable implements Listener {
         e.openInventory(inv);
     }
 
+    public boolean isUnsafe(Enchantment enchantment){
+        telekinesis = new Telekinesis("telekinesis");
+        smeltingTouch = new SmeltingTouch("smeltingTouch");
+        if(enchantment.equals(telekinesis))
+            return true;
+        if(enchantment.equals(smeltingTouch))
+            return true;
+        return false;
+    }
+
     public String convertEnchantToName(Enchantment enchantment){
+        telekinesis = new Telekinesis("telekinesis");
+        smeltingTouch = new SmeltingTouch("smeltingTouch");
+        if(enchantment.equals(telekinesis))
+            return "Telekinesis";
+        if(enchantment.equals(smeltingTouch))
+            return "Smelting Touch";
         if(enchantment.equals(Enchantment.PROTECTION_ENVIRONMENTAL))
             return "Protection";
         else if(enchantment.equals(Enchantment.PROTECTION_FIRE))
@@ -243,6 +235,14 @@ public class EnchantingTable implements Listener {
     }
 
     public Enchantment convertNameToEnchant(String name){
+        if(name.equals("Telekinesis")) {
+            telekinesis = new Telekinesis("telekinesis");
+            return telekinesis;
+        }
+        if(name.equals("Smelting Touch")){
+            smeltingTouch = new SmeltingTouch("smeltingTouch");
+            return smeltingTouch;
+        }
         if(name.equals("Protection"))
             return Enchantment.PROTECTION_ENVIRONMENTAL;
         if(name.equals("Fire Protection"))
@@ -867,6 +867,13 @@ public class EnchantingTable implements Listener {
         }
         else if(item.getType()==Material.WOODEN_SWORD||item.getType()==Material.STONE_SWORD||item.getType()==Material.IRON_SWORD||item.getType()==Material.DIAMOND_SWORD||item.getType()==Material.NETHERITE_SWORD)
         {
+            if(level<=10)
+            {
+                levels.add(1);
+                telekinesis = new Telekinesis("telekinesis");
+                enchantments.add(telekinesis);
+                weights.add(10);
+            }
             if(level>=32) {
                 levels.add(4);
                 enchantments.add(Enchantment.DAMAGE_ALL);
@@ -995,6 +1002,13 @@ public class EnchantingTable implements Listener {
         }
         else if(item.getType()==Material.WOODEN_PICKAXE||item.getType()==Material.STONE_PICKAXE||item.getType()==Material.IRON_PICKAXE||item.getType()==Material.DIAMOND_PICKAXE||item.getType()==Material.NETHERITE_PICKAXE)
         {
+            if(level<=10)
+            {
+                levels.add(1);
+                telekinesis = new Telekinesis("telekinesis");
+                enchantments.add(telekinesis);
+                weights.add(10);
+            }
             if(level>=31) {
                 levels.add(4);
                 enchantments.add(Enchantment.DIG_SPEED);
@@ -1053,6 +1067,13 @@ public class EnchantingTable implements Listener {
         }
         else if(item.getType()==Material.WOODEN_AXE||item.getType()==Material.STONE_AXE||item.getType()==Material.IRON_AXE||item.getType()==Material.DIAMOND_AXE||item.getType()==Material.NETHERITE_AXE)
         {
+            if(level<=10)
+            {
+                levels.add(1);
+                telekinesis = new Telekinesis("telekinesis");
+                enchantments.add(telekinesis);
+                weights.add(10);
+            }
             if(level>=31) {
                 levels.add(4);
                 enchantments.add(Enchantment.DIG_SPEED);
@@ -1111,6 +1132,13 @@ public class EnchantingTable implements Listener {
         }
         else if(item.getType()==Material.WOODEN_HOE||item.getType()==Material.STONE_HOE||item.getType()==Material.IRON_HOE||item.getType()==Material.DIAMOND_HOE||item.getType()==Material.NETHERITE_HOE)
         {
+            if(level<=10)
+            {
+                levels.add(1);
+                telekinesis = new Telekinesis("telekinesis");
+                enchantments.add(telekinesis);
+                weights.add(10);
+            }
             if(level>=31) {
                 levels.add(4);
                 enchantments.add(Enchantment.DIG_SPEED);
@@ -1169,6 +1197,13 @@ public class EnchantingTable implements Listener {
         }
         else if(item.getType()==Material.WOODEN_SHOVEL||item.getType()==Material.STONE_SHOVEL||item.getType()==Material.IRON_SHOVEL||item.getType()==Material.DIAMOND_SHOVEL||item.getType()==Material.NETHERITE_SHOVEL)
         {
+            if(level<=10)
+            {
+                levels.add(1);
+                telekinesis = new Telekinesis("telekinesis");
+                enchantments.add(telekinesis);
+                weights.add(10);
+            }
             if(level>=31) {
                 levels.add(4);
                 enchantments.add(Enchantment.DIG_SPEED);
@@ -1275,6 +1310,13 @@ public class EnchantingTable implements Listener {
             }
         }
         else if(item.getType()==Material.BOW){
+            if(level<=10)
+            {
+                levels.add(1);
+                telekinesis = new Telekinesis("telekinesis");
+                enchantments.add(telekinesis);
+                weights.add(10);
+            }
             if(level>=31) {
                 levels.add(4);
                 enchantments.add(Enchantment.ARROW_DAMAGE);
@@ -1327,6 +1369,13 @@ public class EnchantingTable implements Listener {
             }
         }
         else if(item.getType()==Material.CROSSBOW){
+            if(level<=10)
+            {
+                levels.add(1);
+                telekinesis = new Telekinesis("telekinesis");
+                enchantments.add(telekinesis);
+                weights.add(10);
+            }
             if(level>=21) {
                 levels.add(3);
                 enchantments.add(Enchantment.DURABILITY);
@@ -1949,15 +1998,16 @@ public class EnchantingTable implements Listener {
         if (item == null)
             empty(inv);
         else {
+            int bookshelves = plugin.getConfig().getInt(player.getUniqueId().toString()+"Bookshelves");
             if (item.getItemMeta().hasEnchants()||(inv.getItem(14)!=null&&inv.getItem(14).getType()!=Material.LAPIS_LAZULI))
                 deny(inv);
             else {
                 List<Map<?, ?>> listEnchants = null;
 
                 boolean go_to = false;
-                if(plugin.config.contains(player.getUniqueId() + "Enchants")&&plugin.config.isList(player.getUniqueId() + "Enchants")) {
+                if(plugin.config.contains(player.getUniqueId() + "Enchants"+bookshelves)&&plugin.config.isList(player.getUniqueId() + "Enchants"+bookshelves)) {
                     FileConfiguration config = plugin.getConfig();
-                    listEnchants = config.getMapList(player.getUniqueId() + "Enchants");
+                    listEnchants = config.getMapList(player.getUniqueId() + "Enchants"+bookshelves);
                     if(listEnchants.isEmpty())
                         go_to=true;
                 }
@@ -2011,7 +2061,6 @@ public class EnchantingTable implements Listener {
                     inv.setItem(31, middle);
                     inv.setItem(33, bottom);
                 } else {
-                    int bookshelves = plugin.getConfig().getInt(player.getUniqueId().toString() + "Bookshelves");
                     int baseLevel = random.nextInt(9 - 1) + 1 + (int) Math.floor(bookshelves / 2) + random.nextInt(bookshelves + 1);
                     int baseLevelTop = (int) Math.floor(Math.max(baseLevel / 3, 1));
                     int baseLevelMiddle = (int) Math.floor(baseLevel * 2 / 3 + 1);
@@ -2072,7 +2121,8 @@ public class EnchantingTable implements Listener {
 
                     int weightSumTop = 0;
                     for (int i = 0; i < getEnchants(item, finalTop).getLevels().size(); i++) {
-                        weightSumTop += getEnchants(item, finalTop).getWeight().get(i);
+                        ArrayList<Integer> a = getEnchants(item,finalTop).getWeight();
+                        weightSumTop += a.get(i);
                     }
                     int weightSumMiddle = 0;
                     for (int i = 0; i < getEnchants(item, finalMiddle).getLevels().size(); i++) {
@@ -2143,9 +2193,9 @@ public class EnchantingTable implements Listener {
                         List<Map<?,?>> sendEnchants = new ArrayList<>();
                         sendEnchants.add(enchantsMap);
                         try {
-                            WorldwideSMP.plugin.config.set(player.getUniqueId() + "Enchants", sendEnchants);
+                            WorldwideSMP.plugin.config.set(player.getUniqueId() + "Enchants"+bookshelves, sendEnchants);
                         } catch (NullPointerException err) {
-                            WorldwideSMP.plugin.config.addDefault(player.getUniqueId() + "Enchants", sendEnchants);
+                            WorldwideSMP.plugin.config.addDefault(player.getUniqueId() + "Enchants"+bookshelves, sendEnchants);
                         }
                         WorldwideSMP.plugin.getConfig().options().copyDefaults(true);
                         WorldwideSMP.plugin.saveConfig();
@@ -2289,14 +2339,13 @@ public class EnchantingTable implements Listener {
                                         player.setLevel(player.getLevel() - 3);
                                         break;
                                 }
+                                int bookshelves = plugin.getConfig().getInt(player.getUniqueId().toString()+"Bookshelves");
 
-                                if (plugin.config.contains(player.getUniqueId() + "Enchants")) {
-                                    plugin.config.set(player.getUniqueId() + "Enchants", "");
+                                if (plugin.config.contains(player.getUniqueId() + "Enchants"+bookshelves)) {
+                                    plugin.config.set(player.getUniqueId() + "Enchants"+bookshelves, "");
                                     WorldwideSMP.plugin.getConfig().options().copyDefaults(true);
                                     WorldwideSMP.plugin.saveConfig();
                                 }
-
-
                                 ItemStack item = e.getClickedInventory().getItem(12);
                                 String name = e.getClickedInventory().getItem(e.getSlot()).getItemMeta().getDisplayName();
                                 String[] names = name.split(" ");
@@ -2311,9 +2360,35 @@ public class EnchantingTable implements Listener {
                                     EnchantmentStorageMeta meta = (EnchantmentStorageMeta) book.getItemMeta();
                                     meta.addStoredEnchant(convertNameToEnchant(resultName), amount, true);
                                     book.setItemMeta(meta);
+                                    if(isUnsafe(convertNameToEnchant(resultName))) {
+                                        ItemMeta meta2 = book.getItemMeta();
+                                        List<String> lore = meta.getLore();
+                                        if(lore==null)
+                                        {
+                                            lore = new ArrayList<>();
+                                        }
+                                        lore.add(ChatColor.GRAY+resultName + " " + convertToRoman(Integer.parseInt(names[names.length - 1])));
+                                        meta2.setLore(lore);
+                                        book.setItemMeta(meta2);
+                                    }
                                     e.getClickedInventory().setItem(12, book);
                                 } else {
-                                    item.addEnchantment(convertNameToEnchant(resultName), amount);
+                                    if(isUnsafe(convertNameToEnchant(resultName)))
+                                    {
+                                        item.addUnsafeEnchantment(convertNameToEnchant(resultName), amount);
+                                        ItemMeta meta = item.getItemMeta();
+                                        List<String> lore = meta.getLore();
+                                        if(lore==null)
+                                        {
+                                            lore = new ArrayList<>();
+                                        }
+                                        lore.add(ChatColor.GRAY+resultName+" "+convertToRoman(Integer.parseInt(names[names.length-1])));
+                                        meta.setLore(lore);
+                                        item.setItemMeta(meta);
+                                    }
+                                    else {
+                                        item.addEnchantment(convertNameToEnchant(resultName), amount);
+                                    }
                                     //pick another enchantment
                                     int rand_continue = random.nextInt(50);
                                     int finalLevel = 0;
@@ -2339,8 +2414,9 @@ public class EnchantingTable implements Listener {
 
                                             for (int i = 0; i < enchants.size(); i++) {
                                                 for (int j = 0; j < alreadyEnchants.size(); j++) {
-                                                    if (enchants.get(i).conflictsWith(alreadyEnchants.get(j))) {
-                                                        i--;
+                                                    if (enchants.get(i).conflictsWith(alreadyEnchants.get(j))&&alreadyEnchants.get(j).conflictsWith(enchants.get(i))) {
+                                                        i=0;
+                                                        j=0;
                                                         enchants.remove(i);
                                                     }
                                                 }
@@ -2365,7 +2441,18 @@ public class EnchantingTable implements Listener {
                                                 }
                                             } while (chosen == null);
 
-                                            item.addEnchantment(chosen, chosenLevel);
+                                            if(isUnsafe(chosen))
+                                            {
+                                                item.addUnsafeEnchantment(chosen, chosenLevel);
+                                                ItemMeta meta = item.getItemMeta();
+                                                List<String> lore = meta.getLore();
+                                                lore.add(ChatColor.GRAY+convertEnchantToName(chosen)+" "+convertToRoman(chosenLevel));
+                                                meta.setLore(lore);
+                                                item.setItemMeta(meta);
+                                            }
+                                            else {
+                                                item.addEnchantment(chosen, chosenLevel);
+                                            }
                                             continueLevel /= 2;
                                         } else {
                                             break;

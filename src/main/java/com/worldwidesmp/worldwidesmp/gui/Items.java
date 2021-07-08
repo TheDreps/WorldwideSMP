@@ -1,6 +1,6 @@
 package com.worldwidesmp.worldwidesmp.gui;
 
-import com.sun.tools.javac.jvm.ClassWriter;
+//import com.sun.tools.javac.jvm.ClassWriter;
 import com.worldwidesmp.worldwidesmp.WorldwideSMP;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
