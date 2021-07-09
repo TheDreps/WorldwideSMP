@@ -1,5 +1,6 @@
 package com.worldwidesmp.worldwidesmp;
 
+import com.worldwidesmp.worldwidesmp.enchantments.HeadChance;
 import com.worldwidesmp.worldwidesmp.enchantments.SmeltingTouch;
 import com.worldwidesmp.worldwidesmp.enchantments.Telekinesis;
 import com.worldwidesmp.worldwidesmp.gui.*;
@@ -31,7 +32,7 @@ public final class WorldwideSMP extends JavaPlugin {
     public FileConfiguration config = this.getConfig();
     public static Telekinesis telekinesis;
     public static SmeltingTouch smeltingTouch;
-
+    public static HeadChance headChance;
     @Override
     public void onEnable() {
         plugin = this;
@@ -50,6 +51,10 @@ public final class WorldwideSMP extends JavaPlugin {
 
         smeltingTouch = new SmeltingTouch("smeltingTouch");
         registerEnchantment(smeltingTouch);
+
+        headChance = new HeadChance("headChance");
+        registerEnchantment(headChance);
+
         registerCommands();
         registerEvents();
     }
@@ -96,6 +101,7 @@ public final class WorldwideSMP extends JavaPlugin {
         pm.registerEvents(new Recipes(), this);
         pm.registerEvents(telekinesis, this);
         pm.registerEvents(smeltingTouch, this);
+        pm.registerEvents(headChance, this);
         pm.registerEvents(new EnchantingTable(),this);
     }
 

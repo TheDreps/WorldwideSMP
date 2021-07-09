@@ -29,18 +29,6 @@ public class SmeltingTouch extends Enchantment implements Listener {
 
     // METHODS
 
-    @EventHandler
-    public static void giveItems(BlockPlaceEvent e){
-        if(e.getBlock().getType()== Material.BEDROCK)
-        {
-            ItemStack first = new ItemStack(Material.DIAMOND_SWORD);
-            first.addUnsafeEnchantment(WorldwideSMP.telekinesis,1);
-            ItemStack second = new ItemStack(Material.IRON_PICKAXE);
-            second.addUnsafeEnchantment(WorldwideSMP.telekinesis,1);
-            e.getPlayer().getInventory().addItem(first);
-            e.getPlayer().getInventory().addItem(second);
-        }
-    }
 
     @Override
     public @NotNull
