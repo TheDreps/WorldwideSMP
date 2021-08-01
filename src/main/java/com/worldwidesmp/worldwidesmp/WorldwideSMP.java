@@ -3,13 +3,11 @@ package com.worldwidesmp.worldwidesmp;
 import com.worldwidesmp.worldwidesmp.enchantments.SmeltingTouch;
 import com.worldwidesmp.worldwidesmp.enchantments.Telekinesis;
 import com.worldwidesmp.worldwidesmp.gui.*;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
@@ -94,9 +92,15 @@ public final class WorldwideSMP extends JavaPlugin {
         pm.registerEvents(new Crafting(), this);
         pm.registerEvents(new Backpack(), this);
         pm.registerEvents(new Recipes(), this);
+        pm.registerEvents(new EnchantingTable(),this);
+        pm.registerEvents(new Anvil(),this);
         pm.registerEvents(telekinesis, this);
         pm.registerEvents(smeltingTouch, this);
+<<<<<<< Updated upstream
         pm.registerEvents(new EnchantingTable(),this);
+=======
+        pm.registerEvents(headChance, this);
+>>>>>>> Stashed changes
     }
 
     public static void registerEnchantment(Enchantment ench){
@@ -116,6 +120,14 @@ public final class WorldwideSMP extends JavaPlugin {
         if(!(player.getInventory().addItem(is).isEmpty()))
         {
             player.getWorld().dropItemNaturally(location, is);
+        }
+    }
+
+    public static void givePlayer(HumanEntity player, ItemStack item){
+        if(!player.getInventory().addItem(item).isEmpty())
+        {
+            World world = player.getWorld();
+            world.dropItemNaturally(player.getLocation(), item);
         }
     }
 }

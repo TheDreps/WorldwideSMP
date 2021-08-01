@@ -163,6 +163,18 @@ public class GuiEvents implements Listener {
 
                 enchantingTable.openInventory(p);
             }
+
+            else if(e.getClickedBlock() != null && e.getClickedBlock().getType()==Material.ANVIL){
+
+                if (p.isSneaking() && !(p.getInventory().getItemInMainHand().getType().equals(Material.AIR))) {
+                    //do nothing
+                    return;
+                }
+
+                e.setCancelled(true);
+                Anvil anvil = new Anvil();
+                anvil.openInventory(p);
+            }
         }
     }
 

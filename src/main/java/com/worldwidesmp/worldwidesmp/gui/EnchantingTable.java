@@ -16,6 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import java.util.*;
 
+import static com.worldwidesmp.worldwidesmp.WorldwideSMP.givePlayer;
 import static com.worldwidesmp.worldwidesmp.WorldwideSMP.plugin;
 import static java.lang.Math.round;
 
@@ -2212,13 +2213,7 @@ public class EnchantingTable implements Listener {
         }
     }
 
-    public void givePlayer(HumanEntity player,ItemStack item){
-        if(!player.getInventory().addItem(item).isEmpty())
-        {
-            World world = player.getWorld();
-            world.dropItemNaturally(player.getLocation(), item);
-        }
-    }
+
 
 //    @EventHandler
 //    public void temp(PlayerInteractEvent e){
